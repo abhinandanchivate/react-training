@@ -1,12 +1,16 @@
+import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { registerService } from "../services/auth.service";
+import { connect } from "react-redux";
+import { registerAction } from "../redux/actions/auth.action";
+import { useNavigate } from "react-router-dom";
 const initalState = {
   name: "",
   password: "",
   email: "",
   password2: "",
 };
-const Register = () => {
+const Register2 = ({ isAuthenticated, registerAction }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(initalState);
   const [error, setError] = useState({});
   const { password, email, password2, name } = formData;
@@ -19,18 +23,19 @@ const Register = () => {
 
     console.log("hello from register");
     console.log(formData);
-    registerService(formData)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        let errDetails = {};
-        err.response.data.errors.forEach((e) => {
-          console.log(e.param + " " + e.msg);
-          errDetails[e.param] = e.msg;
-        });
-        setError({ ...errDetails });
-      });
+    registerAction(formData, navigate);
+    // registerService(formData)
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     let errDetails = {};
+    //     err.response.data.errors.forEach((e) => {
+    //       console.log(e.param + " " + e.msg);
+    //       errDetails[e.param] = e.msg;
+    //     });
+    //     setError({ ...errDetails });
+    //   });
   };
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -100,4 +105,15 @@ const Register = () => {
   );
 };
 
-export default Register;
+Register2.propTypes = {
+  isAuthenticated: PropTypes.bool,
+  registerAction: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.authReducer.isAuthenticated,
+});
+
+const mapDispatchToProps = { registerAction };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register2);

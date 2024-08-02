@@ -6,9 +6,10 @@ import Footer from "./core/components/layout/Footer";
 import MainRouter from "./route-routers";
 
 function App() {
+  const appName = "mindsprint";
   return (
     <div className="App">
-      <Navbar />
+      <Navbar appName="mindsprint" />
       <MainRouter />
       <Footer />
     </div>
